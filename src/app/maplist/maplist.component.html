@@ -1,0 +1,46 @@
+  <div class="grid-container">
+    <div class="list">
+        <h3>Procedure list</h3>
+          <mat-accordion>
+            <ng-container *ngFor="let proc of data.procedures |async">
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{proc.properties.name}}
+
+                      </mat-panel-title>
+                      <mat-action-row>
+                        <a
+                        [routerLink]="['procedure', proc.properties.name]"
+                        mat-icon-button
+                        matTooltip="See the procedure"
+                        style="color: black"
+                        >
+                        <mat-icon> info</mat-icon>
+                      </a>
+                      <a
+                      mat-icon-button
+                      matTooltip="Zoom"
+                      style="color: black"
+                      >
+                      <mat-icon> search</mat-icon>
+                    </a>
+                      </mat-action-row>
+                    </mat-expansion-panel-header>
+                    <p>{{proc.properties.description}}</p>
+                  </mat-expansion-panel>
+            </ng-container>
+
+          </mat-accordion>
+    </div>
+    <leaflet-map
+      [center]="config.map.center"
+      [zoom]="config.map.zoom"
+      [basemap]="config.map.basemap"
+      height="95vh"
+      >
+  </leaflet-map>
+    
+
+  </div>
+
