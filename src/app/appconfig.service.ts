@@ -10,7 +10,7 @@ export class AppConfigService {
   constructor(private http: HttpClient) {}
 
   async loadAppConfig() {
-    const source = this.http.get('/assets/config.json');
+    const source = this.http.get('./config/config.json');
     this.appConfig = await lastValueFrom(source);
   }
 

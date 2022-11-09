@@ -1,5 +1,5 @@
 # Node Files #
 /node_modules/
-src/assets/config.json
+src/config/config.json
 .vscode/settings.json
 .angular/*

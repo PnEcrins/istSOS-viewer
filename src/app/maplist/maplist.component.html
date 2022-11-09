@@ -1,6 +1,5 @@
   <div class="grid-container">
     <div class="list">
-        <h3>Procedure list</h3>
           <mat-accordion>
             <ng-container *ngFor="let proc of data.procedures |async">
                 <mat-expansion-panel hideToggle>
@@ -18,13 +17,14 @@
                         >
                         <mat-icon> info</mat-icon>
                       </a>
-                      <a
+                      <button
+                      (click)="zoomToFeature(proc)"
                       mat-icon-button
                       matTooltip="Zoom"
                       style="color: black"
                       >
                       <mat-icon> search</mat-icon>
-                    </a>
+                    </button>
                       </mat-action-row>
                     </mat-expansion-panel-header>
                     <p>{{proc.properties.description}}</p>

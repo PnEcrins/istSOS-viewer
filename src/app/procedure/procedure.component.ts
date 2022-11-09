@@ -1,4 +1,9 @@
-import { Component, OnInit, ResolvedReflectiveFactory } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ResolvedReflectiveFactory,
+} from '@angular/core';
 import * as Plotly from 'plotly.js-dist-min';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -11,23 +16,26 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { MapService } from '../map/map.service';
 
 @Component({
   selector: 'app-procedure',
   templateUrl: './procedure.component.html',
   styleUrls: ['./procedure.component.css'],
+  providers: [MapService],
 })
-export class ProcedureComponent implements OnInit {
+export class ProcedureComponent implements AfterViewInit {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     public configService: AppConfigService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _mapService: MapService
   ) {}
+  public config = this.configService.config;
   public data: Array<any> | null;
   public procedure;
   public procedureName: string | null;
-  public map: any;
   public startPosition: Date | null = null;
   public endPosition: Date | null = null;
   public observedProperties: Array<any>;
@@ -39,11 +47,8 @@ export class ProcedureComponent implements OnInit {
     observedProperties: new FormArray([]),
   });
 
-  ngOnInit() {
-    console.log(this.configService.config);
-
+  ngAfterViewInit(): void {
     this.addNewPropertyForm();
-    this.setMap();
     this.route.paramMap.subscribe((routeParam) => {
       this.procedureName = routeParam.get('name');
       this.http
@@ -58,8 +63,8 @@ export class ProcedureComponent implements OnInit {
           this.observedProperties =
             this.procedure.properties.observedproperties;
           const geojsonLayer = L.geoJSON(this.procedure);
-          geojsonLayer.addTo(this.map);
-          this.map.fitBounds(geojsonLayer.getBounds());
+          geojsonLayer.addTo(this._mapService.map);
+          this._mapService.map.fitBounds(geojsonLayer.getBounds());
           // default show the last year of the first observed property
 
           if (
@@ -171,13 +176,5 @@ export class ProcedureComponent implements OnInit {
         // must eva it
         .pipe(map((result) => JSON.parse(result.replace(/\bNaN\b/g, 'null'))))
     );
-  }
-
-  setMap() {
-    this.map = L.map('map-proc').setView([51.505, -0.09], 13);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.map);
   }
 }
