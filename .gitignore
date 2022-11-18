@@ -3,3 +3,4 @@
 src/config/config.json
 .vscode/settings.json
 .angular/*
+dist/config/config.json
