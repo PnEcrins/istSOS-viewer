@@ -1,19 +1,23 @@
   <div class="grid-container">
     <div class="list">
-      <div class="filter">
-        <mat-form-field appearance="fill">
-            <mat-label>Service</mat-label>
-            <mat-select [formControl]="currentService">
-              <mat-option *ngFor="let service of data.services |async" [value]="service"> {{service}} </mat-option>
+      <div class="filter" class="mb-5">
+        <mat-card>
+          <mat-form-field appearance="outline">
+              <mat-label>Service</mat-label>
+              <mat-select [formControl]="currentService">
+                <mat-option *ngFor="let service of data.services |async" [value]="service"> {{service}} </mat-option>
+              </mat-select>
+          </mat-form-field>
+          <mat-form-field class="margin-l" appearance="outline">
+            <mat-label>Observed properties</mat-label>
+            <mat-select [formControl]="observedProperties">
+              <mat-option *ngFor="let prop of data.observedProperties |async" [value]="prop"> {{prop.name}} </mat-option>
             </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Observed properties</mat-label>
-          <mat-select [formControl]="observedProperties">
-            <mat-option [value]="null"> -- unfilter observed properties-- </mat-option>
-            <mat-option *ngFor="let prop of data.observedProperties |async" [value]="prop"> {{prop.name}} </mat-option>
-          </mat-select>
-      </mat-form-field>
+          </mat-form-field>
+            <button class="margin-l" (click)="refreshFilters()" mat-mini-fab color="accent" matTooltip="refresh filters">
+              <mat-icon>refresh</mat-icon>
+            </button>
+        </mat-card>
       </div>
           <mat-accordion>
             <ng-container *ngFor="let proc of data.procedures | async">

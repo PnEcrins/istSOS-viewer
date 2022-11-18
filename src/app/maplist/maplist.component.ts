@@ -76,4 +76,8 @@ export class MaplistComponent implements AfterViewInit {
     const currentGeoJsonProc = L.geoJSON(proc);
     this.mapService.map.fitBounds(currentGeoJsonProc.getBounds());
   }
+
+  refreshFilters() {
+    this.observedProperties.patchValue(null);
+  }
 }

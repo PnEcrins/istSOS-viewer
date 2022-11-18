@@ -4,13 +4,14 @@
     inline-size: 500px;
 }
 
-/* .list{
-    grid-area: list;
+.list {
+    max-height: 95vh;
+    overflow-y: scroll;
 }
 
-.map {
-    grid-area: map;
-} */
+.margin-l {
+    margin-left: 5px;
+}
 
 .grid-container {
     display: grid;
