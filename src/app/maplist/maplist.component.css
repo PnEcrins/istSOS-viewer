@@ -23,6 +23,10 @@
         grid-template-columns: 1fr;
     }
 }
+.margin-l {
+    margin-left: 5px;
+}
+
 
 .second {
     padding-left: 25px;
