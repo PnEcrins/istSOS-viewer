@@ -1,6 +1,12 @@
-# IstSOSPublic
+# istSOS-viewer
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.8.
+
+List, map and filter all procedures from a service:
+![image](https://user-images.githubusercontent.com/4418840/202248150-e2ac1bb4-086b-4810-9bd0-2a4e02a7ac96.png)
+
+Display detail page of each procedure and plot observations of any observed properties:
+![image](https://user-images.githubusercontent.com/4418840/202248690-b05cfa85-b5e5-4e9f-8d0d-53b771e2a761.png)
 
 ## Development server
 
