@@ -11,18 +11,31 @@ export class DataService {
     public api: HttpClient,
     private _configService: AppConfigService
   ) {
-    this.getProcedures().subscribe();
+    this.getProcedures(this._configService.config.defaultService).subscribe();
+    this.getServices().subscribe();
   }
   public procedures: BehaviorSubject<any> = new BehaviorSubject(null);
+  public services: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  getProcedures(): Observable<any> {
+  getProcedures(service): Observable<any> {
     return this.api
       .get<any>(
-        `${this._configService.config.apiBaseUrl}/wa/istsos/services/ecrins/procedures/operations/geojson`
+        `${this._configService.config.apiBaseUrl}/wa/istsos/services/${service}/procedures/operations/geojson`
       )
       .pipe(
         map((procedures) => {
           this.procedures.next(procedures.features);
+        })
+      );
+  }
+  getServices(): Observable<any> {
+    return this.api
+      .get<any>(
+        `${this._configService.config.apiBaseUrl}/wa/istsos/services?start=0&limit=25`
+      )
+      .pipe(
+        map((response) => {
+          this.services.next(response.data.map((s) => s.service));
         })
       );
   }

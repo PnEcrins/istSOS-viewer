@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import { filter, lastValueFrom } from 'rxjs';
 import { AppConfigService } from '../appconfig.service';
 import { MapService } from '../map/map.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-maplist',
@@ -19,7 +20,12 @@ export class MaplistComponent implements AfterViewInit {
   ) {}
   public config = this.configService.config;
   public layerDict: any;
+  public currentService = new FormControl();
   ngAfterViewInit(): void {
+    this.currentService.patchValue(this.configService.config.defaultService);
+    this.currentService.valueChanges.subscribe((service) => {
+      this.data.getProcedures(service).subscribe();
+    });
     this.data.procedures
       .pipe(filter((procedure) => procedure != null))
       .subscribe((procedures) => {
