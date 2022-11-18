@@ -25,16 +25,21 @@ export class MaplistComponent implements AfterViewInit {
   public observedProperties = new FormControl();
   public geojsonLayer: GeoJSON;
   ngAfterViewInit(): void {
+    // set default service to the form
     this.currentService.patchValue(this.configService.config.defaultService);
+    // event on service change
     this.currentService.valueChanges.subscribe((service) => {
       this.data.getProcedures(service).subscribe();
+      this.data.getObservedProps(service).subscribe();
     });
+    // event on observed prop change
+    // frontend filter on procedures which has the current observed prop
     this.observedProperties.valueChanges.subscribe((prop) => {
       if (prop == null) {
         this.data.procedures.next(this.data.unfilteredProcedures);
         return;
       }
-      const procedureWithCurrentObsProp: Array<string> = prop.procedures;
+      const procedureWithCurrentObsProp = prop.procedures;
 
       const filteredProcedures = this.data.unfilteredProcedures.filter(
         (procedure) => {
@@ -45,6 +50,7 @@ export class MaplistComponent implements AfterViewInit {
       );
       this.data.procedures.next(filteredProcedures);
     });
+    // on procedure change change them on map
     this.data.procedures
       .pipe(filter((procedure) => procedure != null))
       .subscribe((procedures) => {
@@ -68,7 +74,7 @@ export class MaplistComponent implements AfterViewInit {
   onEachFeature(feature, layer) {
     layer.bindPopup(`
       ${feature.properties.name} <br>
-      <a [routerLink]=['procedure', ${feature.properties.name}] href='./#/procedure/${feature.properties.name}'> See procedure detail </a>
+      <a href='./#/procedure/${feature.properties.name}'> See procedure detail </a>
     `);
   }
 
