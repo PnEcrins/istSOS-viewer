@@ -42,37 +42,38 @@
                       [ngStyle]="{'visibility': data ? 'visible': 'hidden', 'height': data ? 'auto': '0px' }" id="plotly"></div>
                   <small> From {{startPosition ?  (startPosition | date:'short'): ''}} to {{endPosition ? (endPosition |date:'short') : 'n/a'}} </small> <br>
                   <div *ngFor="let form of plotForm.get('observedProperties').controls; let i=index">
-                      <mat-form-field appearance="fill">
+                      <mat-form-field appearance="outline" class="margin-l">
                           <mat-label>Observed properties</mat-label>
                           <mat-select [formControl]="form.get('propertyName')">
                             <mat-option *ngFor="let prop of observedProperties" [value]="prop.def">{{prop.name}}</mat-option>
                           </mat-select>
                         </mat-form-field>
-                        <mat-form-field appearance="fill">
+                        <mat-form-field appearance="outline" class="margin-l">
                           <mat-label>Plot type</mat-label>
                           <mat-select [formControl]="form.get('plotType')">
                             <mat-option value="lines" > lines </mat-option>
                             <mat-option value="markers">  markers</mat-option>
                           </mat-select>
                         </mat-form-field>
-                        <button *ngIf="i>0" (click)="removePropertyForm(i)" matTooltip="Remove this property" mat-mini-fab color="warn">
+                        <button class="margin-l" *ngIf="i>0" (click)="removePropertyForm(i)" matTooltip="Remove this property" mat-mini-fab color="warn">
                           <mat-icon>remove</mat-icon>
                         </button>
-                  </div>
+                        <button class="margin-l" *ngIf="i == plotForm.get('observedProperties').controls.length -1" (click)="addNewPropertyForm()" matTooltip="Add a new property" mat-mini-fab color="primary" aria-label="Example icon button with a home icon">
+                          <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
 
-                    <button (click)="addNewPropertyForm()" matTooltip="Add a new property" mat-mini-fab color="primary" aria-label="Example icon button with a home icon">
-                      <mat-icon>add</mat-icon>
-                    </button>
+
                   
                     <br>
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="outline">
                       <mat-label>Start date</mat-label>
                       <input matInput [matDatepicker]="pickerStart" [formControl]="plotForm.get('startDate')">
                       <mat-hint>MM/DD/YYYY</mat-hint>
                       <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
                       <mat-datepicker #pickerStart></mat-datepicker>
                     </mat-form-field>
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="outline" class="margin-l">
                       <mat-label>End  date</mat-label>
                       <input matInput [matDatepicker]="pickerEnd" [formControl]="plotForm.get('endDate')">
                       <mat-hint>MM/DD/YYYY</mat-hint>

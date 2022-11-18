@@ -9,9 +9,6 @@
     overflow-y: scroll;
 }
 
-.margin-l {
-    margin-left: 5px;
-}
 
 .grid-container {
     display: grid;
