@@ -12,10 +12,15 @@ export class DataService {
     private _configService: AppConfigService
   ) {
     this.getProcedures(this._configService.config.defaultService).subscribe();
+    this.getObservedProps(
+      this._configService.config.defaultService
+    ).subscribe();
     this.getServices().subscribe();
   }
   public procedures: BehaviorSubject<any> = new BehaviorSubject(null);
+  public unfilteredProcedures: Array<any> = [];
   public services: BehaviorSubject<any> = new BehaviorSubject(null);
+  public observedProperties: BehaviorSubject<any> = new BehaviorSubject(null);
 
   getProcedures(service): Observable<any> {
     return this.api
@@ -24,6 +29,7 @@ export class DataService {
       )
       .pipe(
         map((procedures) => {
+          this.unfilteredProcedures = procedures.features;
           this.procedures.next(procedures.features);
         })
       );
@@ -36,6 +42,17 @@ export class DataService {
       .pipe(
         map((response) => {
           this.services.next(response.data.map((s) => s.service));
+        })
+      );
+  }
+  getObservedProps(service): Observable<any> {
+    return this.api
+      .get<any>(
+        `${this._configService.config.apiBaseUrl}/wa/istsos/services/${service}/observedproperties`
+      )
+      .pipe(
+        map((response) => {
+          this.observedProperties.next(response.data);
         })
       );
   }

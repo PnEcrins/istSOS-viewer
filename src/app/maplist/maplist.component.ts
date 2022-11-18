@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../data.service';
 import * as L from 'leaflet';
+import { GeoJSON } from 'leaflet';
 import { filter, lastValueFrom } from 'rxjs';
 import { AppConfigService } from '../appconfig.service';
 import { MapService } from '../map/map.service';
@@ -21,21 +22,45 @@ export class MaplistComponent implements AfterViewInit {
   public config = this.configService.config;
   public layerDict: any;
   public currentService = new FormControl();
+  public observedProperties = new FormControl();
+  public geojsonLayer: GeoJSON;
   ngAfterViewInit(): void {
     this.currentService.patchValue(this.configService.config.defaultService);
     this.currentService.valueChanges.subscribe((service) => {
       this.data.getProcedures(service).subscribe();
     });
+    this.observedProperties.valueChanges.subscribe((prop) => {
+      if (prop == null) {
+        this.data.procedures.next(this.data.unfilteredProcedures);
+        return;
+      }
+      const procedureWithCurrentObsProp: Array<string> = prop.procedures;
+
+      const filteredProcedures = this.data.unfilteredProcedures.filter(
+        (procedure) => {
+          return procedureWithCurrentObsProp.includes(
+            procedure.properties.name
+          );
+        }
+      );
+      this.data.procedures.next(filteredProcedures);
+    });
     this.data.procedures
       .pipe(filter((procedure) => procedure != null))
       .subscribe((procedures) => {
-        const geojsonLayer = L.geoJSON(procedures, {
+        if (this.geojsonLayer) {
+          this.mapService.map.removeLayer(this.geojsonLayer);
+        }
+        this.geojsonLayer = L.geoJSON(procedures, {
           onEachFeature: this.onEachFeature.bind(this),
         });
-        geojsonLayer.addTo(this.mapService.map);
+        this.geojsonLayer.addTo(this.mapService.map);
         // HACK ? otherwise the map is zoom at earth level...
         setTimeout(() => {
-          this.mapService.map.fitBounds(geojsonLayer.getBounds());
+          const currentBounds = this.geojsonLayer.getBounds();
+          if (currentBounds._northEast) {
+            this.mapService.map.fitBounds(currentBounds);
+          }
         }, 500);
       });
   }
