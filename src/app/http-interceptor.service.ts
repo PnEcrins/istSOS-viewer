@@ -20,7 +20,6 @@ export class AuthentInterceptor implements HttpInterceptor {
     console.log('LAAA', request);
     if (!request.url.includes('config.json')) {
       request = request.clone({
-        withCredentials: true,
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: 'Basic ' + this.configService.config.HTTP_API_AUTHENT,
