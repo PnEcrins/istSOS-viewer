@@ -1,5 +1,6 @@
 {
     "apiBaseUrl": "MY_URL",
+    "HTTP_API_AUTHENT": "user:passwd",
     "map": {
       "zoom": 10,
       "center": [42, 6],

@@ -1,6 +1,6 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,9 +27,15 @@ import { ProcedureComponent } from './procedure/procedure.component';
 import { MaplistComponent } from './maplist/maplist.component';
 import { AppConfigService } from './appconfig.service';
 import { MapComponent } from './map/map.component';
+import { AuthentInterceptor } from './http-interceptor.service';
 
 @NgModule({
-  declarations: [AppComponent, ProcedureComponent, MaplistComponent, MapComponent],
+  declarations: [
+    AppComponent,
+    ProcedureComponent,
+    MaplistComponent,
+    MapComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -65,6 +71,12 @@ import { MapComponent } from './map/map.component';
           return appConfigService.loadAppConfig();
         };
       },
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      deps: [AppConfigService],
+      useClass: AuthentInterceptor,
+      multi: true,
     },
   ],
   bootstrap: [AppComponent],
