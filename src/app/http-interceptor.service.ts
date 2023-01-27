@@ -17,12 +17,10 @@ export class AuthentInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log('LAAA', request);
     if (!request.url.includes('config.json')) {
       request = request.clone({
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
-          Host: 'istsos.ecrins.net',
           Authorization:
             'Basic ' + window.btoa(this.configService.config.HTTP_API_AUTHENT),
         }),

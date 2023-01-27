@@ -56,8 +56,6 @@ export class ProcedureComponent implements AfterViewInit {
           `${this.configService.config.apiBaseUrl}/wa/istsos/services/ecrins/procedures/operations/geojson?epsg=4326&procedure=${this.procedureName}`
         )
         .subscribe((proc) => {
-          console.log(proc);
-
           this.procedure = proc.features[0];
 
           this.observedProperties =
@@ -88,8 +86,8 @@ export class ProcedureComponent implements AfterViewInit {
             (this.plotForm.get('observedProperties') as FormArray).patchValue([
               {
                 plotType: 'lines',
-                propertyName:
-                  this.procedure.properties.observedproperties[0].def,
+                observedProperty:
+                  this.procedure.properties.observedproperties[0],
               },
             ]);
             this.getData(this.startPosition, this.endPosition).subscribe({
@@ -122,13 +120,15 @@ export class ProcedureComponent implements AfterViewInit {
     const y: any[] = [];
     const traces: any[] = [];
     let indexOfValue = 1;
+    console.log(this.plotForm.value);
+
     this.plotForm.value.observedProperties?.forEach((prop) => {
       traces.push({
         x: [],
         y: [],
         mode: (prop as any).plotType,
         indexOfValue: indexOfValue,
-        name: (prop as any).propertyName,
+        name: (prop as any).observedProperty.name,
       });
       // the value list is set like this [value, qualityindex, value, qualityIndex ...]
       indexOfValue = indexOfValue + 2;
@@ -148,7 +148,7 @@ export class ProcedureComponent implements AfterViewInit {
 
   addNewPropertyForm() {
     const formGroup = new FormGroup({
-      propertyName: new FormControl(),
+      observedProperty: new FormControl(),
       plotType: new FormControl(),
     });
     (this.plotForm.get('observedProperties') as FormArray).push(formGroup);
@@ -162,12 +162,12 @@ export class ProcedureComponent implements AfterViewInit {
     this.data = null;
     const formValues = (this.plotForm.get('observedProperties') as FormArray)
       .value;
-    const observedProperties = formValues.map((f) => f.propertyName).join(',');
-    console.log('props', observedProperties);
+    const observedProperties = formValues
+      .map((f) => f.observedProperty.def)
+      .join(',');
 
     const chartSamplingTimeSerie = `${startDate.toISOString()}/${endDate.toISOString()}`;
     const url = `${this.configService.config.apiBaseUrl}/wa/istsos/services/ecrins/operations/getobservation/offerings/${this.offering}/procedures/${this.procedureName}/observedproperties/${observedProperties}/eventtime/${chartSamplingTimeSerie}`;
-    console.log(url);
 
     return (
       this.http
