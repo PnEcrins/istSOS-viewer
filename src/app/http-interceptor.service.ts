@@ -22,10 +22,13 @@ export class AuthentInterceptor implements HttpInterceptor {
       request = request.clone({
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
-          Authorization: 'Basic ' + this.configService.config.HTTP_API_AUTHENT,
+          Host: 'istsos.ecrins.net',
+          Authorization:
+            'Basic ' + window.btoa(this.configService.config.HTTP_API_AUTHENT),
         }),
       });
     }
+
     return next.handle(request);
   }
 }
