@@ -18,13 +18,16 @@ export class AuthentInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (!request.url.includes('config.json')) {
-      request = request.clone({
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization:
-            'Basic ' + window.btoa(this.configService.config.HTTP_API_AUTHENT),
-        }),
-      });
+      if (this.configService.config.HTTP_API_AUTHENT) {
+        request = request.clone({
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization:
+              'Basic ' +
+              window.btoa(this.configService.config.HTTP_API_AUTHENT),
+          }),
+        });
+      }
     }
 
     return next.handle(request);

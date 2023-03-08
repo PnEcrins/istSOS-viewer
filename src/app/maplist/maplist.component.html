@@ -29,7 +29,7 @@
                       </mat-panel-title>
                       <mat-action-row>
                         <a
-                        [routerLink]="['procedure', proc.properties.name]"
+                        [routerLink]="['service', currentService.value, 'procedure', proc.properties.name]"
                         mat-icon-button
                         matTooltip="Display procedure detail"
                         style="color: black"

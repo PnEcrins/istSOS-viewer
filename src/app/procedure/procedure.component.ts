@@ -36,6 +36,7 @@ export class ProcedureComponent implements AfterViewInit {
   public data: Array<any> | null;
   public procedure;
   public procedureName: string | null;
+  public serviceName: string | null;
   public startPosition: Date | null = null;
   public endPosition: Date | null = null;
   public observedProperties: Array<any>;
@@ -50,10 +51,11 @@ export class ProcedureComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.addNewPropertyForm();
     this.route.paramMap.subscribe((routeParam) => {
-      this.procedureName = routeParam.get('name');
+      this.procedureName = routeParam.get('procedure');
+      this.serviceName = routeParam.get('service');
       this.http
         .get<any>(
-          `${this.configService.config.apiBaseUrl}/wa/istsos/services/ecrins/procedures/operations/geojson?epsg=4326&procedure=${this.procedureName}`
+          `${this.configService.config.apiBaseUrl}/wa/istsos/services/${this.serviceName}/procedures/operations/geojson?epsg=4326&procedure=${this.procedureName}`
         )
         .subscribe((proc) => {
           this.procedure = proc.features[0];
@@ -120,7 +122,6 @@ export class ProcedureComponent implements AfterViewInit {
     const y: any[] = [];
     const traces: any[] = [];
     let indexOfValue = 1;
-    console.log(this.plotForm.value);
 
     this.plotForm.value.observedProperties?.forEach((prop) => {
       traces.push({

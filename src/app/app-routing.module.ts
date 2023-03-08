@@ -3,7 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProcedureComponent } from './procedure/procedure.component';
 import { MaplistComponent } from './maplist/maplist.component';
 const routes: Routes = [
-  { path: 'procedure/:name', component: ProcedureComponent },
+  {
+    path: 'service/:service/procedure/:procedure',
+    component: ProcedureComponent,
+  },
   { path: '', component: MaplistComponent },
 ];
 
