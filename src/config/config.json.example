@@ -1,5 +1,5 @@
 {
-    "apiBaseUrl": "MY_URL",
+    "apiBaseUrl": "http://MY_URL",
     "HTTP_API_AUTHENT": "user:passwd",
     "map": {
       "zoom": 10,
@@ -9,7 +9,6 @@
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "attribution":"&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
        }
-    }
+    },
     "defaultService": "my_service"
-
 }

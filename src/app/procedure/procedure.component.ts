@@ -168,7 +168,7 @@ export class ProcedureComponent implements AfterViewInit {
       .join(',');
 
     const chartSamplingTimeSerie = `${startDate.toISOString()}/${endDate.toISOString()}`;
-    const url = `${this.configService.config.apiBaseUrl}/wa/istsos/services/ecrins/operations/getobservation/offerings/${this.offering}/procedures/${this.procedureName}/observedproperties/${observedProperties}/eventtime/${chartSamplingTimeSerie}`;
+    const url = `${this.configService.config.apiBaseUrl}/wa/istsos/services/${this.serviceName}/operations/getobservation/offerings/${this.offering}/procedures/${this.procedureName}/observedproperties/${observedProperties}/eventtime/${chartSamplingTimeSerie}`;
 
     return (
       this.http
