@@ -58,6 +58,15 @@ export class ProcedureComponent implements AfterViewInit {
           `${this.configService.config.apiBaseUrl}/wa/istsos/services/${this.serviceName}/procedures/operations/geojson?epsg=4326&procedure=${this.procedureName}`
         )
         .subscribe((proc) => {
+          if (proc.features.length == 0) {
+            this._snackBar.open(
+              'API error - this procedure has no description',
+              'Close'
+            );
+            this.noDataOnProcedure = true;
+            throw new Error('IstSOS API error : missing procedure');
+          }
+
           this.procedure = proc.features[0];
 
           this.observedProperties =
@@ -136,8 +145,6 @@ export class ProcedureComponent implements AfterViewInit {
     });
 
     result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
-      console.log(values[0]);
-
       traces.forEach((trace) => {
         trace.x.push(values[0]);
         trace.y.push(values[trace.indexOfValue]);
