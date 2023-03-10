@@ -74,7 +74,7 @@ export class MaplistComponent implements AfterViewInit {
   onEachFeature(feature, layer) {
     layer.bindPopup(`
       ${feature.properties.name} <br>
-      <a href='./#/procedure/${feature.properties.name}'> See procedure detail </a>
+      <a href='./#/service/${this.currentService.value}/procedure/${feature.properties.name}'> See procedure detail </a>
     `);
   }
 
