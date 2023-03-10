@@ -23,11 +23,8 @@ export class MaplistComponent implements AfterViewInit {
   ) {}
   public config = this.configService.config;
   public layerDict: any;
-  public observedProperties = new FormControl();
   public geojsonLayer: GeoJSON;
   ngAfterViewInit(): void {
-    console.log('repasse la ?');
-
     // event on service change
     this.globalService.currentService.valueChanges.subscribe((service) => {
       this.data.getProcedures(service).subscribe();
@@ -35,7 +32,7 @@ export class MaplistComponent implements AfterViewInit {
     });
     // event on observed prop change
     // frontend filter on procedures which has the current observed prop
-    this.observedProperties.valueChanges.subscribe((prop) => {
+    this.globalService.observedProperties.valueChanges.subscribe((prop) => {
       if (prop == null) {
         this.data.procedures.next(this.data.unfilteredProcedures);
         return;
@@ -85,6 +82,6 @@ export class MaplistComponent implements AfterViewInit {
   }
 
   refreshFilters() {
-    this.observedProperties.patchValue(null);
+    this.globalService.observedProperties.patchValue(null);
   }
 }
