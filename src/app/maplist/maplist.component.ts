@@ -6,6 +6,7 @@ import { filter, lastValueFrom } from 'rxjs';
 import { AppConfigService } from '../appconfig.service';
 import { MapService } from '../map/map.service';
 import { FormControl } from '@angular/forms';
+import { GlobalService } from '../service/global.service';
 
 @Component({
   selector: 'app-maplist',
@@ -17,18 +18,18 @@ export class MaplistComponent implements AfterViewInit {
   constructor(
     public data: DataService,
     public configService: AppConfigService,
-    public mapService: MapService
+    public mapService: MapService,
+    public globalService: GlobalService
   ) {}
   public config = this.configService.config;
   public layerDict: any;
-  public currentService = new FormControl();
   public observedProperties = new FormControl();
   public geojsonLayer: GeoJSON;
   ngAfterViewInit(): void {
-    // set default service to the form
-    this.currentService.patchValue(this.configService.config.defaultService);
+    console.log('repasse la ?');
+
     // event on service change
-    this.currentService.valueChanges.subscribe((service) => {
+    this.globalService.currentService.valueChanges.subscribe((service) => {
       this.data.getProcedures(service).subscribe();
       this.data.getObservedProps(service).subscribe();
     });
@@ -74,7 +75,7 @@ export class MaplistComponent implements AfterViewInit {
   onEachFeature(feature, layer) {
     layer.bindPopup(`
       ${feature.properties.name} <br>
-      <a href='./#/service/${this.currentService.value}/procedure/${feature.properties.name}'> See procedure detail </a>
+      <a href='./#/service/${this.globalService.currentService.value}/procedure/${feature.properties.name}'> See procedure detail </a>
     `);
   }
 
