@@ -136,15 +136,28 @@ export class ProcedureComponent implements AfterViewInit {
     });
 
     result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
+      console.log(values[0]);
+
       traces.forEach((trace) => {
         trace.x.push(values[0]);
         trace.y.push(values[trace.indexOfValue]);
       });
     });
     const graphEl = document.getElementById('plotly');
-    Plotly.newPlot(graphEl as any, traces, {
+    const layout = {
       margin: { t: 0 },
-    });
+      title: 'llalala',
+      xaxis: {
+        hoverformat: '%Y-%m-%dT%H:%S',
+        rangeslider: {
+          bordercolor: '#000',
+          bgcolor: '#d9d9d930',
+          borderwidth: 1,
+        },
+      },
+    };
+
+    Plotly.newPlot(graphEl as any, traces, layout);
   }
 
   addNewPropertyForm() {
