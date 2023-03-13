@@ -86,15 +86,15 @@ export class ProcedureComponent implements AfterViewInit {
             this.endPosition = new Date(
               this.procedure.properties.samplingTime.endposition
             );
-            this.startPosition = new Date(
-              this.procedure.properties.samplingTime.beginposition
-            );
 
+            this.startPosition = new Date(this.endPosition.getTime());
             this.startPosition.setFullYear(this.endPosition.getFullYear() - 1);
+
             this.plotForm.patchValue({
               startDate: this.startPosition,
               endDate: this.endPosition,
             });
+
             (this.plotForm.get('observedProperties') as FormArray).patchValue([
               {
                 plotType: 'lines',
