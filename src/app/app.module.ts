@@ -20,10 +20,14 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProcedureComponent } from './procedure/procedure.component';
+import {
+  ProcedureComponent,
+  DialogPlotConfig,
+} from './procedure/procedure.component';
 import { MaplistComponent } from './maplist/maplist.component';
 import { AppConfigService } from './appconfig.service';
 import { MapComponent } from './map/map.component';
@@ -35,6 +39,7 @@ import { AuthentInterceptor } from './http-interceptor.service';
     ProcedureComponent,
     MaplistComponent,
     MapComponent,
+    DialogPlotConfig,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +64,7 @@ import { AuthentInterceptor } from './http-interceptor.service';
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatDialogModule,
   ],
   providers: [
     {

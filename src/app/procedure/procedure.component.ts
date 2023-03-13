@@ -11,12 +11,11 @@ import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { FormGroup, FormControl, FormArray, Form } from '@angular/forms';
 import { AppConfigService } from '../appconfig.service';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition,
-} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+
 import { MapService } from '../map/map.service';
+import { ProcedureService } from './procedure.service';
 
 @Component({
   selector: 'app-procedure',
@@ -30,7 +29,8 @@ export class ProcedureComponent implements AfterViewInit {
     private route: ActivatedRoute,
     public configService: AppConfigService,
     private _snackBar: MatSnackBar,
-    private _mapService: MapService
+    private _mapService: MapService,
+    public dialog: MatDialog
   ) {}
   public config = this.configService.config;
   public data: Array<any> | null;
@@ -144,16 +144,31 @@ export class ProcedureComponent implements AfterViewInit {
       indexOfValue = indexOfValue + 2;
     });
 
-    result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
-      traces.forEach((trace) => {
-        trace.x.push(values[0]);
-        trace.y.push(values[trace.indexOfValue]);
+    // if no data config is not NaN, we must eliminate this value from the graph
+    if (this.config.NO_DATA_VALUE == 'NaN') {
+      result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
+        traces.forEach((trace) => {
+          trace.x.push(values[0]);
+          trace.y.push(values[trace.indexOfValue]);
+        });
       });
-    });
+    } else {
+      const noDataValue = parseFloat(this.config.NO_DATA_VALUE);
+      result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
+        traces.forEach((trace) => {
+          if (values[trace.indexOfValue] != noDataValue) {
+            trace.x.push(values[0]);
+            trace.y.push(values[trace.indexOfValue]);
+          } else {
+            trace.x.push(values[0]);
+            trace.y.push(NaN);
+          }
+        });
+      });
+    }
     const graphEl = document.getElementById('plotly');
     const layout = {
       margin: { t: 0 },
-      title: 'llalala',
       xaxis: {
         hoverformat: '%Y-%m-%dT%H:%S',
         rangeslider: {
@@ -198,4 +213,16 @@ export class ProcedureComponent implements AfterViewInit {
         .pipe(map((result) => JSON.parse(result.replace(/\bNaN\b/g, 'null'))))
     );
   }
+
+  openDialog() {
+    this.dialog.open(DialogPlotConfig);
+  }
+}
+
+@Component({
+  selector: 'dialog-plot-config',
+  templateUrl: 'dialog-plot-config.html',
+})
+export class DialogPlotConfig {
+  constructor(public procedureService: ProcedureService) {}
 }

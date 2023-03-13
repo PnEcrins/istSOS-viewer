@@ -85,7 +85,11 @@
               <mat-card-actions>
                   <button (click)="onPlotData()" mat-raised-button color="primary">Plot</button>
                   <button mat-raised-button color="secondary">Export</button>
-                </mat-card-actions>
+                  <button (click)="openDialog()" color="secondary"  mat-icon-button aria-label="Example icon button with a home icon">
+                    <mat-icon>settings</mat-icon>
+                  </button> 
+                                 
+              </mat-card-actions>
               <mat-card-footer>
                   
               </mat-card-footer>
@@ -104,4 +108,3 @@
  
 
 </div>
-
