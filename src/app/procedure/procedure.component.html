@@ -40,7 +40,6 @@
 
                   <div 
                       [ngStyle]="{'visibility': data ? 'visible': 'hidden', 'height': data ? 'auto': '0px' }" id="plotly"></div>
-                  <small> From {{startPosition ?  (startPosition | date:'short'): ''}} to {{endPosition ? (endPosition |date:'short') : 'n/a'}} </small> <br>
                   <div *ngFor="let form of plotForm.get('observedProperties').controls; let i=index">
                       <mat-form-field appearance="outline" class="margin-l">
                           <mat-label>Observed properties</mat-label>
