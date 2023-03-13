@@ -30,7 +30,8 @@ export class ProcedureComponent implements AfterViewInit {
     public configService: AppConfigService,
     private _snackBar: MatSnackBar,
     private _mapService: MapService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public procedureService: ProcedureService
   ) {}
   public config = this.configService.config;
   public data: Array<any> | null;
@@ -145,7 +146,7 @@ export class ProcedureComponent implements AfterViewInit {
     });
 
     // if no data config is not NaN, we must eliminate this value from the graph
-    if (this.config.NO_DATA_VALUE == 'NaN') {
+    if (this.procedureService.noDataValueForm.value == 'NaN') {
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
         traces.forEach((trace) => {
           trace.x.push(values[0]);
@@ -153,7 +154,9 @@ export class ProcedureComponent implements AfterViewInit {
         });
       });
     } else {
-      const noDataValue = parseFloat(this.config.NO_DATA_VALUE);
+      const noDataValue = parseFloat(
+        this.procedureService.noDataValueForm.value
+      );
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
         traces.forEach((trace) => {
           if (values[trace.indexOfValue] != noDataValue) {
@@ -178,7 +181,6 @@ export class ProcedureComponent implements AfterViewInit {
         },
       },
     };
-
     Plotly.newPlot(graphEl as any, traces, layout);
   }
 
