@@ -24,6 +24,7 @@
     "angular-plotly.js": "^4.0.4",
     "bootstrap": "^5.2.2",
     "leaflet": "^1.9.2",
+    "leaflet.markercluster": "^1.5.3",
     "plotly.js-dist-min": "^2.16.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

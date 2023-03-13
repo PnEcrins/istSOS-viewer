@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { DataService } from '../data.service';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { GeoJSON } from 'leaflet';
-import { filter, lastValueFrom, Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { AppConfigService } from '../appconfig.service';
 import { MapService } from '../map/map.service';
-import { FormControl } from '@angular/forms';
 import { GlobalService } from '../service/global.service';
 
 @Component({
@@ -25,6 +25,7 @@ export class MaplistComponent implements AfterViewInit, OnDestroy {
   public layerDict: any;
   public geojsonLayer: GeoJSON;
   public subs: Array<Subscription> = [];
+  public markerClusterGroup = L.markerClusterGroup();
   ngAfterViewInit(): void {
     // event on service change
     const sub = this.globalService.currentService.valueChanges.subscribe(
@@ -65,7 +66,8 @@ export class MaplistComponent implements AfterViewInit, OnDestroy {
         this.geojsonLayer = L.geoJSON(procedures, {
           onEachFeature: this.onEachFeature.bind(this),
         });
-        this.geojsonLayer.addTo(this.mapService.map);
+        this.markerClusterGroup.addLayers(this.geojsonLayer);
+        this.mapService.map.addLayer(this.markerClusterGroup);
         // HACK ? otherwise the map is zoom at earth level...
         setTimeout(() => {
           const currentBounds = this.geojsonLayer.getBounds();
