@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { DataService } from '../data.service';
 import * as L from 'leaflet';
 import { GeoJSON } from 'leaflet';
-import { filter, lastValueFrom } from 'rxjs';
+import { filter, lastValueFrom, Subscription } from 'rxjs';
 import { AppConfigService } from '../appconfig.service';
 import { MapService } from '../map/map.service';
 import { FormControl } from '@angular/forms';
@@ -14,7 +14,7 @@ import { GlobalService } from '../service/global.service';
   styleUrls: ['./maplist.component.css'],
   providers: [MapService],
 })
-export class MaplistComponent implements AfterViewInit {
+export class MaplistComponent implements AfterViewInit, OnDestroy {
   constructor(
     public data: DataService,
     public configService: AppConfigService,
@@ -24,30 +24,37 @@ export class MaplistComponent implements AfterViewInit {
   public config = this.configService.config;
   public layerDict: any;
   public geojsonLayer: GeoJSON;
+  public subs: Array<Subscription> = [];
   ngAfterViewInit(): void {
     // event on service change
-    this.globalService.currentService.valueChanges.subscribe((service) => {
-      this.data.getProcedures(service).subscribe();
-      this.data.getObservedProps(service).subscribe();
-    });
+    const sub = this.globalService.currentService.valueChanges.subscribe(
+      (service) => {
+        this.data.getProcedures(service).subscribe();
+        this.data.getObservedProps(service).subscribe();
+      }
+    );
+    this.subs.push(sub);
     // event on observed prop change
     // frontend filter on procedures which has the current observed prop
-    this.globalService.observedProperties.valueChanges.subscribe((prop) => {
-      if (prop == null) {
-        this.data.procedures.next(this.data.unfilteredProcedures);
-        return;
-      }
-      const procedureWithCurrentObsProp = prop.procedures;
-
-      const filteredProcedures = this.data.unfilteredProcedures.filter(
-        (procedure) => {
-          return procedureWithCurrentObsProp.includes(
-            procedure.properties.name
-          );
+    const sub2 = this.globalService.observedProperties.valueChanges.subscribe(
+      (prop) => {
+        if (prop == null) {
+          this.data.procedures.next(this.data.unfilteredProcedures);
+          return;
         }
-      );
-      this.data.procedures.next(filteredProcedures);
-    });
+        const procedureWithCurrentObsProp = prop.procedures;
+
+        const filteredProcedures = this.data.unfilteredProcedures.filter(
+          (procedure) => {
+            return procedureWithCurrentObsProp.includes(
+              procedure.properties.name
+            );
+          }
+        );
+        this.data.procedures.next(filteredProcedures);
+      }
+    );
+    this.subs.push(sub2);
     // on procedure change change them on map
     this.data.procedures
       .pipe(filter((procedure) => procedure != null))
@@ -83,5 +90,11 @@ export class MaplistComponent implements AfterViewInit {
 
   refreshFilters() {
     this.globalService.observedProperties.patchValue(null);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => {
+      sub.unsubscribe();
+    });
   }
 }

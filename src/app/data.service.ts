@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, filter } from 'rxjs';
 import { AppConfigService } from './appconfig.service';
 
 @Injectable({
@@ -52,7 +52,11 @@ export class DataService {
       )
       .pipe(
         map((response) => {
-          this.observedProperties.next(response.data);
+          this.observedProperties.next(
+            response.data.filter((obsProp) => {
+              return obsProp.procedures.length > 0;
+            })
+          );
         })
       );
   }
