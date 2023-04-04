@@ -60,8 +60,10 @@ export class MaplistComponent implements AfterViewInit, OnDestroy {
     this.data.procedures
       .pipe(filter((procedure) => procedure != null))
       .subscribe((procedures) => {
+        console.log('change ?');
+
         if (this.geojsonLayer) {
-          this.mapService.map.removeLayer(this.geojsonLayer);
+          this.markerClusterGroup.removeLayer(this.geojsonLayer);
         }
         this.geojsonLayer = L.geoJSON(procedures, {
           onEachFeature: this.onEachFeature.bind(this),
