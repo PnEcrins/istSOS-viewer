@@ -41,7 +41,8 @@ export class DataService {
       )
       .pipe(
         map((response) => {
-          this.services.next(response.data.map((s) => s.service));
+          const services = response.data.filter((s) => !this._configService.config.excluded_services.includes( s.service ) );          
+          this.services.next(services);
         })
       );
   }

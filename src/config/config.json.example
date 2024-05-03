@@ -10,6 +10,7 @@
         "attribution":"&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
        }
     },
+    "excluded_services": [],
     "defaultService": "my_service",
     "NO_DATA_VALUE": "NaN"
 }
