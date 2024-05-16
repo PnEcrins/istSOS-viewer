@@ -57,9 +57,10 @@
                         <button class="margin-l" *ngIf="i>0" (click)="removePropertyForm(i)" matTooltip="Remove this property" mat-mini-fab color="warn">
                           <mat-icon>remove</mat-icon>
                         </button>
-                        <button class="margin-l" *ngIf="i == plotForm.get('observedProperties').controls.length -1" (click)="addNewPropertyForm()" matTooltip="Add a new property" mat-mini-fab color="primary" aria-label="Example icon button with a home icon">
+                        <!-- FIXME : ajouter plusieurs propriété BUG -->
+                        <!-- <button class="margin-l" *ngIf="i == plotForm.get('observedProperties').controls.length -1" (click)="addNewPropertyForm()" matTooltip="Add a new property" mat-mini-fab color="primary" aria-label="Example icon button with a home icon">
                           <mat-icon>add</mat-icon>
-                        </button>
+                        </button> -->
                     </div>
 
 
@@ -83,7 +84,7 @@
 
               <mat-card-actions>
                   <button (click)="onPlotData()" mat-raised-button color="primary">Plot</button>
-                  <button mat-raised-button color="secondary">Export</button>
+                  <button (click)="generateCSV()"  mat-raised-button color="secondary">Export</button>
                   <button (click)="openDialog()" color="secondary"  mat-icon-button aria-label="Example icon button with a home icon">
                     <mat-icon>settings</mat-icon>
                   </button> 

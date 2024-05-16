@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, filter } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { AppConfigService } from './appconfig.service';
 
 @Injectable({
@@ -29,8 +29,11 @@ export class DataService {
       )
       .pipe(
         map((procedures) => {
-          this.unfilteredProcedures = procedures.features;
-          this.procedures.next(procedures.features);
+          const notExcludedProceduresFeatures = procedures.features.filter(procedure => {
+            return !this._configService.config.excluded_procedures.includes(procedure.properties.name)
+          });
+          this.unfilteredProcedures = notExcludedProceduresFeatures;
+          this.procedures.next(notExcludedProceduresFeatures);
         })
       );
   }

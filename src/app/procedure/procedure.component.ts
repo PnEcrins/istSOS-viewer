@@ -48,6 +48,8 @@ export class ProcedureComponent implements AfterViewInit {
     endDate: new FormControl(),
     observedProperties: new FormArray([]),
   });
+  public observedPropertiesValues: any =  {};
+  public traces: any;
 
   ngAfterViewInit(): void {
     this.addNewPropertyForm();
@@ -103,7 +105,9 @@ export class ProcedureComponent implements AfterViewInit {
               },
             ]);
             this.getData(this.startPosition, this.endPosition).subscribe({
-              next: (result) => this.plotData(result),
+              next: (result) => {
+                this.plotAndStoreData(result);
+              },
               error: (e) => console.log('ERROR', e.message),
             });
           } else {
@@ -122,19 +126,20 @@ export class ProcedureComponent implements AfterViewInit {
   onPlotData() {
     const formValues = this.plotForm.value;
     this.getData(formValues.startDate, formValues.endDate).subscribe((data) => {
-      this.plotData(data);
+      this.plotAndStoreData(data);
     });
   }
 
-  plotData(result) {
+  plotAndStoreData(result) {
     this.data = result;
     const x: any[] = [];
     const y: any[] = [];
-    const traces: any[] = [];
+    this.traces = [];
+    this.observedPropertiesValues = {};
     let indexOfValue = 1;
 
     this.plotForm.value.observedProperties?.forEach((prop) => {
-      traces.push({
+      this.traces.push({
         x: [],
         y: [],
         mode: (prop as any).plotType,
@@ -148,7 +153,7 @@ export class ProcedureComponent implements AfterViewInit {
     // if no data config is not NaN, we must eliminate this value from the graph
     if (this.procedureService.noDataValueForm.value == 'NaN') {
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
-        traces.forEach((trace) => {
+        this.traces.forEach((trace) => {
           trace.x.push(values[0]);
           trace.y.push(values[trace.indexOfValue]);
         });
@@ -158,7 +163,7 @@ export class ProcedureComponent implements AfterViewInit {
         this.procedureService.noDataValueForm.value
       );
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
-        traces.forEach((trace) => {
+        this.traces.forEach((trace) => {
           if (values[trace.indexOfValue] != noDataValue) {
             trace.x.push(values[0]);
             trace.y.push(values[trace.indexOfValue]);
@@ -168,6 +173,7 @@ export class ProcedureComponent implements AfterViewInit {
           }
         });
       });
+      
     }
     const graphEl = document.getElementById('plotly');
     const layout = {
@@ -181,7 +187,8 @@ export class ProcedureComponent implements AfterViewInit {
         },
       },
     };
-    Plotly.newPlot(graphEl as any, traces, layout);
+    Plotly.newPlot(graphEl as any, this.traces, layout);
+    
   }
 
   addNewPropertyForm() {
@@ -218,6 +225,35 @@ export class ProcedureComponent implements AfterViewInit {
 
   openDialog() {
     this.dialog.open(DialogPlotConfig);
+  }
+
+  generateCSV() {
+    // set header
+    let fileStr = "date;"
+    let observedProp = this.plotForm.value.observedProperties?.map((prop:any) => prop.observedProperty.name);
+    if(observedProp) {
+      fileStr += observedProp.join(";")
+    }
+    fileStr += "\r\n"
+    
+    // Loop on all data of the first trace (all traces have the same length)
+    for(let i = 0; i < this.traces[0].x.length; i++) {
+      // Set date      
+      fileStr += this.traces[0].x[i] + ";";
+      this.traces.forEach((trace:any) => {
+        // set properties for each plot trace
+        let val = trace.y[i];
+        if(!val) {
+          val = "NaN"
+        }
+        fileStr += val + ";"
+      })
+      fileStr +=  "\r\n"
+    }
+    let res = "Text to save in a text file";
+    const blob = new Blob([(fileStr as string)], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url);
   }
 }
 
