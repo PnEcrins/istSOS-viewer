@@ -132,8 +132,6 @@ export class ProcedureComponent implements AfterViewInit {
 
   plotAndStoreData(result) {
     this.data = result;
-    const x: any[] = [];
-    const y: any[] = [];
     this.traces = [];
     this.observedPropertiesValues = {};
     let indexOfValue = 1;
@@ -141,7 +139,10 @@ export class ProcedureComponent implements AfterViewInit {
     this.plotForm.value.observedProperties?.forEach((prop) => {
       this.traces.push({
         x: [],
+        // we push NaN for all "NaN" or value = noDataValueForm and value not in range minExcludedValueForm and maxExcludedValueForm
         y: [],
+        // use for export to export the raw data not the data replaced with NaN
+        yNotFiltered: [],
         mode: (prop as any).plotType,
         indexOfValue: indexOfValue,
         name: (prop as any).observedProperty.name,
@@ -151,50 +152,50 @@ export class ProcedureComponent implements AfterViewInit {
     });
 
     // if no data config is not NaN, we must eliminate this value from the graph
-    if (this.procedureService.noDataValueForm.value == 'NaN') {
+    const noDataValue = parseFloat(
+      this.procedureService.noDataValueForm.value
+    );
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
         this.traces.forEach((trace) => {
-          trace.x.push(values[0]);
-          trace.y.push(values[trace.indexOfValue]);
-        });
-      });
-    } else {
-      const noDataValue = parseFloat(
-        this.procedureService.noDataValueForm.value
-      );
-      result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
-        this.traces.forEach((trace) => {
-          if (values[trace.indexOfValue] != noDataValue) {
+          let yValue = values[trace.indexOfValue];
+          if(
+            yValue == noDataValue || yValue == 'NaN' ||
+             (this.procedureService.minExcludedValueForm.value && yValue <= this.procedureService.minExcludedValueForm.value) ||
+             (this.procedureService.maxExcludedValueForm.value && yValue >= this.procedureService.maxExcludedValueForm.value)
+            ) {
+              trace.x.push(values[0]);
+              trace.y.push(NaN);
+              trace.yNotFiltered.push(yValue);
+            }
+          else {
             trace.x.push(values[0]);
             trace.y.push(values[trace.indexOfValue]);
-          } else {
-            trace.x.push(values[0]);
-            trace.y.push(NaN);
+            trace.yNotFiltered.push(yValue);
           }
         });
       });
+
       
-    }
-    const graphEl = document.getElementById('plotly');
-    const layout = {
-      margin: { t: 0 },
-      xaxis: {
-        hoverformat: '%Y-%m-%dT%H:%S',
-        rangeslider: {
-          bordercolor: '#000',
-          bgcolor: '#d9d9d930',
-          borderwidth: 1,
+      const graphEl = document.getElementById('plotly');
+      const layout = {
+        margin: { t: 0 },
+        xaxis: {
+          hoverformat: '%Y-%m-%dT%H:%S',
+          rangeslider: {
+            bordercolor: '#000',
+            bgcolor: '#d9d9d930',
+            borderwidth: 1,
+          },
         },
-      },
-    };
-    Plotly.newPlot(graphEl as any, this.traces, layout);
-    
+      };
+      Plotly.newPlot(graphEl as any, this.traces, layout);
+      
   }
 
   addNewPropertyForm() {
     const formGroup = new FormGroup({
       observedProperty: new FormControl(),
-      plotType: new FormControl(),
+      plotType: new FormControl('lines'),
     });
     (this.plotForm.get('observedProperties') as FormArray).push(formGroup);
   }
@@ -242,7 +243,7 @@ export class ProcedureComponent implements AfterViewInit {
       fileStr += this.traces[0].x[i] + ";";
       this.traces.forEach((trace:any) => {
         // set properties for each plot trace
-        let val = trace.y[i];
+        let val = trace.yNotFiltered[i];
         if(!val) {
           val = "NaN"
         }

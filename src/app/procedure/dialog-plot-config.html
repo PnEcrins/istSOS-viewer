@@ -4,6 +4,18 @@
         <mat-label>No data value</mat-label>
         <input matInput type="text" [formControl]="procedureService.noDataValueForm">
       </mat-form-field>
+      <br>
+      Exclude value from :
+      <table class="example-full-width" cellspacing="0"><tr>
+        <td><mat-form-field class="example-full-width">
+          <mat-label>Min value </mat-label>
+          <input matInput type="number"  [formControl]="procedureService.minExcludedValueForm">
+        </mat-form-field></td>
+        <td><mat-form-field class="example-full-width">
+          <mat-label>Max value</mat-label>
+          <input matInput type="number"  [formControl]="procedureService.maxExcludedValueForm">
+        </mat-form-field></td>
+      </tr></table>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button color="primary" mat-dialog-close>Validate</button>
