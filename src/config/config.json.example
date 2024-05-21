@@ -13,5 +13,6 @@
     "excluded_services": ["service_name"],
     "excluded_procedures": ["procedure_name"],
     "defaultService": "my_service",
-    "NO_DATA_VALUE": "NaN"
+    "NO_DATA_VALUE": "NaN",
+    "appName": "IstSOS Viewer"
 }

@@ -75,8 +75,9 @@ export class ProcedureComponent implements AfterViewInit {
           this.observedProperties =
             this.procedure.properties.observedproperties;
           const geojsonLayer = L.geoJSON(this.procedure);
-          geojsonLayer.addTo(this._mapService.map);
+          geojsonLayer.addTo(this._mapService.map);          
           this._mapService.map.fitBounds(geojsonLayer.getBounds());
+          this._mapService.map.setZoom(15);
           // default show the last year of the first observed property
 
           if (
