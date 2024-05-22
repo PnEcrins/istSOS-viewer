@@ -245,7 +245,7 @@ export class ProcedureComponent implements AfterViewInit {
       this.traces.forEach((trace:any) => {
         // set properties for each plot trace
         let val = trace.yNotFiltered[i];
-        if(!val) {
+        if(val == "" || val == undefined || val == null) {
           val = "NaN"
         }
         fileStr += val + ";"

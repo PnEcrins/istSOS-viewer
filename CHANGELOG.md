@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+
+1.1.1 (22-05-2024)
+-------------------
+
+- Correction du remplacement des valeurs 0 par NaN dans les exports
+
+
 1.1.0 (21-05-2024)
 -------------------
 
