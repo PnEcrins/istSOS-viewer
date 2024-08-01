@@ -14,5 +14,6 @@
     "excluded_procedures": ["procedure_name"],
     "defaultService": "my_service",
     "NO_DATA_VALUE": "NaN",
-    "appName": "IstSOS Viewer"
+    "appName": "IstSOS Viewer",
+    "DISPLAY_DATE_IN_LOCAL_TIMEZONE" : false
 }

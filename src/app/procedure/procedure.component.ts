@@ -158,18 +158,23 @@ export class ProcedureComponent implements AfterViewInit {
     );
       result.data[0].result.DataArray.values.forEach((values: Array<any>) => {
         this.traces.forEach((trace) => {
+          var date = values[0];
+          if(this.config.DISPLAY_DATE_IN_LOCAL_TIMEZONE) {
+            date = this.toIsoLocalString(values[0])
+          }
           let yValue = values[trace.indexOfValue];
           if(
             yValue == noDataValue || yValue == 'NaN' ||
              (this.procedureService.minExcludedValueForm.value && yValue <= this.procedureService.minExcludedValueForm.value) ||
              (this.procedureService.maxExcludedValueForm.value && yValue >= this.procedureService.maxExcludedValueForm.value)
             ) {
-              trace.x.push(values[0]);
+              trace.x.push(date)
               trace.y.push(NaN);
               trace.yNotFiltered.push(yValue);
             }
           else {
-            trace.x.push(values[0]);
+            // trace.x.push(values[0]);
+            trace.x.push(date)
             trace.y.push(values[trace.indexOfValue]);
             trace.yNotFiltered.push(yValue);
           }
@@ -191,6 +196,18 @@ export class ProcedureComponent implements AfterViewInit {
       };
       Plotly.newPlot(graphEl as any, this.traces, layout);
       
+  }
+
+  toIsoLocalString(date):string {
+    return new Date(date).toLocaleString(
+      'sv', {
+        year:'numeric', 
+        month:'numeric', 
+        day:'numeric', 
+        hour:'numeric', 
+        minute:'numeric', 
+        second:'numeric', 
+      }).replace(',', '.').replace(' ', 'T');
   }
 
   addNewPropertyForm() {
@@ -240,8 +257,12 @@ export class ProcedureComponent implements AfterViewInit {
     
     // Loop on all data of the first trace (all traces have the same length)
     for(let i = 0; i < this.traces[0].x.length; i++) {
-      // Set date      
-      fileStr += this.traces[0].x[i] + ";";
+      // Set date
+      var date = this.traces[0].x[i];
+      if(this.config.DISPLAY_DATE_IN_LOCAL_TIMEZONE) {
+        date = this.toIsoLocalString(this.traces[0].x[i])
+      }
+      fileStr += date + ";";
       this.traces.forEach((trace:any) => {
         // set properties for each plot trace
         let val = trace.yNotFiltered[i];

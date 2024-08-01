@@ -23,3 +23,4 @@ In IstSOS, missing values are replaced by the value "999.9". You can modify glob
   - `apiBaseUrl` is your istSOS address
   - `HTTP_API_AUTHENT`is your user and password, if you protected your istSOS with http basic authentification. Do not use your admin password because it can be decoded (use a viewer profile)
   - `NO_DATA_VALUE` is the default value of your "missing values". Those values won't be plot on the graph
+  - `DISPLAY_DATE_IN_LOCAL_TIMEZONE` (boolean) : parameter to control if data (on graph and export) are display in UTC (false) or in local timezone (true)

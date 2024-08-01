@@ -2,6 +2,12 @@ CHANGELOG
 =========
 
 
+1.2.0 (23-07-2024)
+-------------------
+
+- Ajout du paramètre `DISPLAY_DATE_IN_LOCAL_TIMEZONE` pour pouvoir afficher les date dans la timezone locale. Par défault à `false`: affiche les date en UTC
+
+
 1.1.1 (23-05-2024)
 -------------------
 
